@@ -47,7 +47,89 @@ function countTimer(deadLine) {
 updateClock();
 
 }
+countTimer('25 april 2020');
 
-countTimer('22 april 2020');
+//Меню
+const toggleMenu = () => {
+
+//ищем элементы
+    const btnMenu = document.querySelector('.menu'),
+        menu = document.querySelector('menu'),
+        closeBtn = document.querySelector('.close-btn'),
+        menuItem = menu.querySelectorAll('ul>li');
+
+//скрывание меню
+        const handlerMenu = () => {
+            //toggle - убирает или добавляет прописанный в скобках класс
+            menu.classList.toggle('active-menu'); //анимированное меню
+
+            // if(!menu.style.transform || menu.style.transform === 'translate(-100%)') {
+            //     menu.style.transform = 'translate(0)';
+            // } else{
+            //     menu.style.transform = 'translate(-100%)';
+            // }    
+        };
+
+        btnMenu.addEventListener('click', handlerMenu);
+        closeBtn.addEventListener('click', handlerMenu);
+        //Нажимаем на пункты меню -> меню скрывается
+        menuItem.forEach((elem) => elem.addEventListener('click', handlerMenu));
+            
+};
+
+
+toggleMenu();
+
+
+//popup
+const togglePopUp = () => {
+    //получает popup окна
+    const popup = document.querySelector('.popup'),
+    //получаем popup кнопки
+    popupBtn = document.querySelectorAll('.popup-btn'),
+    //получаем крестик на popup окне
+    popUpClose = document.querySelector('.popup-close'),
+    popupContent = document.querySelector('.popup .popup-content');
+  
+   
+//Анимация кнопок, свойство opacity
+    let popupOpacity = () => {
+        if(screen.width > 768) {
+            let count = 0;
+            let opInterval = setInterval (() => {   
+                popup.style.display = 'block';
+                popupContent.style.opacity = count;
+                count += 0.3;
+    
+                    if (count >= 1) {
+                        clearInterval(opInterval);  
+                    }
+            }, 80);
+        } else {
+            popup.style.display = 'block';
+        }
+    };
+
+//Нажатие на кнопки
+    popupBtn.forEach((elem) => 
+    // elem.addEventListener('click', () => {
+    //     popup.style.display = 'block';
+        elem.addEventListener('click', popupOpacity));
+    
+//Закрытие модального окна    
+    popUpClose.addEventListener('click', () => {
+        popup.style.display = 'none';
+    });
+};
+
+togglePopUp();
+
+
+
+
+
+
+
+
 
 });
