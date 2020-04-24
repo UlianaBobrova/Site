@@ -104,8 +104,8 @@ const togglePopUp = () => {
     //получаем крестик на popup окне
     // popUpClose = document.querySelector('.popup-close'),
         popupContent = document.querySelector('.popup .popup-content');
-  
-   
+
+        
 //Анимация кнопок, свойство opacity
     let popupOpacity = () => {
         if(screen.width > 768) {
@@ -115,7 +115,7 @@ const togglePopUp = () => {
                 popupContent.style.opacity = count;
                 count += 0.2;
     
-                    if (count >= 1) {
+                    if (count >= 1.2) {
                         clearInterval(opInterval);  
                     }
             }, 100);
