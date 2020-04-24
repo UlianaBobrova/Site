@@ -47,7 +47,7 @@ function countTimer(deadLine) {
 updateClock();
 
 }
-countTimer('25 april 2020');
+countTimer('27 april 2020');
 
 //Меню
 const toggleMenu = () => {
@@ -61,26 +61,41 @@ const toggleMenu = () => {
 //скрывание меню
         const handlerMenu = () => {
             //toggle - убирает или добавляет прописанный в скобках класс
-            menu.classList.toggle('active-menu'); //анимированное меню
-
-            // if(!menu.style.transform || menu.style.transform === 'translate(-100%)') {
-            //     menu.style.transform = 'translate(0)';
-            // } else{
-            //     menu.style.transform = 'translate(-100%)';
-            // }    
+            if(!menu.style.transform || menu.style.transform === 'translate(-100%)') {
+                if(!menu.classList.toggle('active-menu')){
+                    menu.classList.toggle('active-menu');
+                }  
+                menu.style.transform = 'translate(0)';
+                } else{
+                menu.style.transform = 'translate(-100%)';            
+            }    
         };
-
+ 
         btnMenu.addEventListener('click', handlerMenu);
-        closeBtn.addEventListener('click', handlerMenu);
+  
+        menu.addEventListener('click', (event) => {
+            let target = event.target;
+
+            if (target.classList.contains('close-btn')){
+                menu.style.transform = 'translate(-100%)';
+                //menu.classList.remove('active-menu');
+            } else {
+            target = target.closest('menu');
+            menu.style.transform = 'translate(-100%)'; 
+        } 
+            // if (!target) {
+            // menu.style.transform = 'translate(-100%)';   }
+    });
+    
+        //closeBtn.addEventListener('click', handlerMenu);
         //Нажимаем на пункты меню -> меню скрывается
-        menuItem.forEach((elem) => elem.addEventListener('click', handlerMenu));
-            
+        //menuItem.forEach((elem) => elem.addEventListener('click', handlerMenu);             
 };
 
 toggleMenu();
 
-
 //popup
+
 const togglePopUp = () => {
     //получает popup окна
     const popup = document.querySelector('.popup'),
@@ -98,12 +113,12 @@ const togglePopUp = () => {
             let opInterval = setInterval (() => {   
                 popup.style.display = 'block';
                 popupContent.style.opacity = count;
-                count += 0.3;
+                count += 0.2;
     
                     if (count >= 1) {
                         clearInterval(opInterval);  
                     }
-            }, 200);
+            }, 100);
         } else {
             popup.style.display = 'block';
         }
@@ -125,8 +140,7 @@ const togglePopUp = () => {
             if(!target) {
                 popup.style.display = 'none';
             }
-        }
-          
+        }      
     });
 };
 
