@@ -113,12 +113,12 @@ const togglePopUp = () => {
             let opInterval = setInterval (() => {   
                 popup.style.display = 'block';
                 popupContent.style.opacity = count;
-                count += 0.2;
+                count += 0.02;
     
                     if (count >= 1.2) {
                         clearInterval(opInterval);  
                     }
-            }, 100);
+            }, 20);
         } else {
             popup.style.display = 'block';
         }
@@ -198,9 +198,10 @@ tabs();
 const slider = () => {
     const slide = document.querySelectorAll('.portfolio-item'),
     btn = document.querySelectorAll('portfolio-btn');
-    let dot = document.querySelectorAll('.dot');
-    const dotClass = document.querySelector('.portfolio-dots'),
-    slider = document.querySelector('.portfolio-content');
+    let dotClass = document.querySelector('.portfolio-dots');
+    let dot = document.querySelectorAll('ul > li');
+    // console.log(dot);
+    const slider = document.querySelector('.portfolio-content');
 
     //номер активного слайда
     let currentSlide = 0;
@@ -208,7 +209,7 @@ const slider = () => {
     let interval;
     
     //выносим удаление класса в отдельную функцию.Принимает 3 аргумента-элемент,индекс,класс,кот.хотим добавить\удалить
-    const prevSlide = (elem, index, strClass) =>{
+    const prevSlide = (elem, index, strClass) => {
         elem[index].classList.remove(strClass);
     };
 
@@ -217,15 +218,33 @@ const slider = () => {
     };
 
 //добавляем точки к слайдам
+//     const addDots = () => {
+//         for (let i = 0; i < slide.length-1; i++) {
+//         let newDot = dot[0].cloneNode();
+//         newDot.classList.remove('dot-active');
+//         dotClass.append(newDot);
+//         dot = document.querySelectorAll('.dot');
+//     };   
+// };
+// addDots(); 
     const addDots = () => {
-        for (let i = 0; i < slide.length-1; i++) {
-        let newDot = dot[0].cloneNode();
-        newDot.classList.remove('dot-active');
-        dotClass.append(newDot);
+
+        for (let i = 0; i < slide.length; i++) {
+        let dot = document.createElement('li');
+        dot.classList.add('dot');
+        dotClass.appendChild(dot);
         dot = document.querySelectorAll('.dot');
-    };   
-};
-addDots(); 
+        console.log(dot);
+        dot.item(0).classList.add('dot-active');
+ 
+            dot.forEach((elem) => {
+           // elem.classList.add('dot');
+            console.log(elem);
+            });
+        }        
+    }; 
+
+    addDots(); 
 
 //функция для автоматического перелистывания слайдов
     const autoPlaySlide = () => {
@@ -304,12 +323,33 @@ addDots();
         }
     });
 
-
-
    startSlide(1500);
 };
 
-
 slider();
+
+//Блок Наша команда
+
+const command = () => {
+    const commandPeople = document.querySelector('#command');
+    let photo = document.querySelector('.command__photo');
+    let photo1 = document.querySelectorAll('.command__photo');
+
+    let src = photo.getAttribute('src');
+
+    photo1.forEach((elem) => elem.addEventListener('mouseenter', (event) => {
+    event.target.src = event.target.dataset.img;
+    console.log(event.target.dataset.img); 
+    })
+  );
+
+  photo1.forEach((elem) => elem.addEventListener('mouseleave', (event) => {
+    event.target.src = src;
+    })
+  );
+
+};
+
+command();
 
 });
