@@ -56,7 +56,7 @@ const toggleMenu = () => {
     const btnMenu = document.querySelector('.menu'),
         menu = document.querySelector('menu'),
         closeBtn = document.querySelector('.close-btn'),
-        menuItem = menu.querySelectorAll('ul>li');
+        menuItem = menu.querySelectorAll('ul > li');
 
 //скрывание меню
         const handlerMenu = () => {
@@ -198,11 +198,11 @@ tabs();
 const slider = () => {
     const slide = document.querySelectorAll('.portfolio-item'),
     btn = document.querySelectorAll('portfolio-btn');
-    let dotClass = document.querySelector('.portfolio-dots');
-    let dot = document.querySelectorAll('ul > li');
-    // console.log(dot);
+    const portfolio = document.querySelector('.portfolio');
+    let dotClass = portfolio.querySelector('.portfolio-dots');
     const slider = document.querySelector('.portfolio-content');
-
+    let dot = dotClass.querySelectorAll('ul > li');
+    
     //номер активного слайда
     let currentSlide = 0;
     //переменная для stopSlide
@@ -217,30 +217,17 @@ const slider = () => {
         elem[index].classList.add(strClass);
     };
 
-//добавляем точки к слайдам
-//     const addDots = () => {
-//         for (let i = 0; i < slide.length-1; i++) {
-//         let newDot = dot[0].cloneNode();
-//         newDot.classList.remove('dot-active');
-//         dotClass.append(newDot);
-//         dot = document.querySelectorAll('.dot');
-//     };   
-// };
 // addDots(); 
     const addDots = () => {
 
         for (let i = 0; i < slide.length; i++) {
-        let dot = document.createElement('li');
+
+        dot = document.createElement('li');
         dot.classList.add('dot');
-        dotClass.appendChild(dot);
-        dot = document.querySelectorAll('.dot');
-        console.log(dot);
-        dot.item(0).classList.add('dot-active');
- 
-            dot.forEach((elem) => {
-           // elem.classList.add('dot');
-            console.log(elem);
-            });
+        dotClass.append(dot);
+      
+        dot = portfolio.querySelectorAll('.dot');
+        dot[currentSlide].classList.add('dot-active');
         }        
     }; 
 
@@ -346,7 +333,17 @@ const command = () => {
   );
 
 };
-
 command();
+
+//Калькулятор
+
+const counter = () => {
+    const square = document.querySelectorAll('.calc-block > input');
+    console.log(square);
+
+
+};
+
+counter();
 
 });
