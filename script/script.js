@@ -339,9 +339,11 @@ command();
 
 const counter = () => {
     const square = document.querySelectorAll('.calc-block > input');
-    console.log(square);
 
-
+    square.forEach((elem) => elem.addEventListener('input', (event) => {
+        event.target.value = event.target.value.replace(/\D/gi, '');
+    })
+    );
 };
 
 counter();
