@@ -3,8 +3,8 @@ window.addEventListener('DOMContentLoaded', function(){
 'use strict';
  
 //Таймер
-function countTimer(deadLine) {
-    let timerHours = document.querySelector('#timer-hours'),
+    function countTimer(deadLine) {
+        let timerHours = document.querySelector('#timer-hours'),
         timerMinutes = document.querySelector('#timer-minutes'),
         timerSeconds = document.querySelector('#timer-seconds');
 
@@ -318,7 +318,7 @@ slider();
 //Блок Наша команда
 
     const command = () => {
-    const commandPeople = document.querySelector('#command');
+    //const commandPeople = document.querySelector('#command');
     let photo = document.querySelectorAll('.command__photo');
     
     photo.forEach((elem) => elem.addEventListener('mouseenter', (event) => {
@@ -338,10 +338,10 @@ slider();
 
 //Калькулятор
 
-// const counter = () => {
-//     const square = document.querySelectorAll('.calc-block > input');
+// const checkInput = () => {
+//     const inpute = document.querySelectorAll('input');
 
-//     square.forEach((elem) => elem.addEventListener('input', (event) => {
+//     input.forEach((elem) => elem.addEventListener('input', (event) => {
 //         event.target.value = event.target.value.replace(/\D/gi, '');
 //     })
 //     );
@@ -378,7 +378,7 @@ slider();
         }    
 //пока пользователь не заполнит 2 первых поля, в total должен выводиться 0
         if(typeValue && squareValue) {
-        total = price * typeValue * squareValue * countValue * dayValue;
+        total = Math.floor(price * typeValue * squareValue * countValue * dayValue);
         } 
 
     //вывод на страницу
@@ -407,4 +407,162 @@ slider();
 //при вызове калькулятора передаем ему цену price
     calc(100);
 
+//очистка input-ов
+    const clearInput = () => {
+        document.querySelectorAll('input').forEach((item) => {
+            item.value = ''; 
+        });
+    };
+    
+    //send-ajax-form
+    const sendForm = () => {
+//переменные с сообщениями,которые мы будем передавать пользователю
+        const errorMessage = 'Что-то пошло не так...',
+            loadMessage = 'Загрузка...',
+            successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
+
+        const form = document.getElementById('form1');
+        const inputEmail = document.querySelectorAll('.form-email');
+        const inputTel = document.querySelectorAll('.form-phone');
+        const inputName = document.querySelectorAll('.form-name');
+        const inputMessage = document.querySelector('.mess');
+     
+        inputEmail.forEach((elem) => elem.addEventListener('input', (event) => {
+            event.target.value = event.target.value.replace(/[^a-z\.\-\+\@\_0-9]/gi, '');
+            })
+        );
+
+        inputTel.forEach((elem) => elem.addEventListener('input', (event) => {
+            event.target.value = event.target.value.replace(/[^0-9+]/gi, '');
+            })
+        );
+
+        inputName.forEach((elem) => elem.addEventListener('input', (event) => {
+            event.target.value = event.target.value.replace(/[^а-я ]/gi, '');
+            })         
+        );
+
+        inputMessage.addEventListener('input', (event) => {
+            event.target.value = event.target.value.replace(/[^а-я ]/gi, '');
+        });
+
+        const formQuestion = document.getElementById('form2');
+        const formPopup = document.getElementById('form3');
+//div для хранения сообщений для пользователя
+        const statusMessage = document.createElement('div');
+        statusMessage.style.cssText = 'font-size: 2rem;';
+        
+//вешаем на форму обработчик события,срабатывает submit
+        form.addEventListener('submit', (event) => {
+            clearInput();
+            //отменяем стандартное поведение,чтобы страница не перезагружалась после кнопки submit
+            event.preventDefault();
+            
+            form.appendChild(statusMessage);
+            //когда состояние readyState поменялось с 0 появилось сообщение Загрузка...
+            statusMessage.textContent = loadMessage;
+            const formData = new FormData(form);
+            //Если серверу надо передать в JSON-формате,извлекаем данные из formData,переберем данные с цикле for of
+            let body = {};
+            //с помощью метода .entries вытащим значения из formData.Получаем массив
+            for(let val of formData.entries()) {
+            //Добавляем полученные данные в body. Значения с ключом.Получаем объект
+                body[val[0]] = val[1];                   
+            }
+            // //делаем тоже самое с циклом forEach
+            // formData.forEach((val, key) => {
+            //     body[key] = val;
+            // });  
+            //в postData передаем body, callback-фун-ию(outputData-оповещение пользователя) 
+            postData(body, 
+                () => {
+                statusMessage.textContent = successMessage;
+                }, 
+                (error) => {
+                statusMessage.textContent = errorMessage;
+                console.error(error);
+                }
+            );  
+        });
+
+        formQuestion.addEventListener('submit', (event) => {
+            clearInput();
+            event.preventDefault();
+            formQuestion.appendChild(statusMessage);
+            statusMessage.textContent = loadMessage;
+
+            const formData = new FormData(formQuestion);
+            let body = {};
+            for(let val of formData.entries()) {
+                body[val[0]] = val[1];                   
+                }
+                postData(body, 
+                    () => {
+                    statusMessage.textContent = successMessage;
+                    }, 
+                    (error) => {
+                    statusMessage.textContent = errorMessage;
+                    console.error(error);
+                    }
+                );      
+        });
+
+        formPopup.addEventListener('submit', (event) => {
+            clearInput();
+            event.preventDefault();
+            formPopup.appendChild(statusMessage);
+            statusMessage.textContent = loadMessage;
+            statusMessage.style.color = 'white';
+
+            const formData = new FormData(formPopup);
+            let body = {};
+            for(let val of formData.entries()) {
+                body[val[0]] = val[1];                   
+                }
+                postData(body, 
+                    () => {
+                    statusMessage.style.color = 'white';
+                    statusMessage.textContent = successMessage;
+                    }, 
+                    (error) => {
+                    statusMessage.style.color = 'white';
+                    statusMessage.textContent = errorMessage;
+                    console.error(error);
+                    }
+                );      
+        }); 
+        
+        //функция обращения к серверу
+        const postData = (body, outputData, errorData) => {
+            const request = new XMLHttpRequest();
+            //readeyStateChange отслеживать после XMLHttpRequest,чтобы отслеживать процесс. Это событие возникает,когда меняется состояние readyState
+            request.addEventListener('readystatechange', () =>{     
+                if(request.readyState !== 4) {
+                    return;
+                }
+                if(request.status === 200) {
+                    outputData();   
+                } else {
+                    errorData(request.status);
+                }
+
+            });
+
+            //метод POST для отправки данных на сервер.URL-пишем путь до файла server.php 
+            request.open('POST', './server.php');
+            //настройка заголовков.Второй параметр-значение,надо указать,что мы данные отправляем с формы
+            // request.setRequestHeader('Content-type', 'multipart/form-data');
+            request.setRequestHeader('Content-type', 'application/json');
+            //перед отправкой, надо данные получить при помощи javaScript.Это удобнее сделать через объект FormData,считывает все данные из формы,input,все,что содержится в форме и имеет формат name
+          
+            //открываем соединение и отправляем данные с помошью метода send
+            // request.send(formData);
+
+            //вместо formData будем отправлять body в формате JSON
+            request.send(JSON.stringify(body));
+        };
+
+    };
+
+    sendForm();
 });
