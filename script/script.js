@@ -413,20 +413,27 @@ slider();
             item.value = ''; 
         });
     };
-    
+
+   
     //send-ajax-form
     const sendForm = () => {
 //переменные с сообщениями,которые мы будем передавать пользователю
         const errorMessage = 'Что-то пошло не так...',
             loadMessage = 'Загрузка...',
             successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
+           
 
         const form = document.getElementById('form1');
+        const formQuestion = document.getElementById('form2');
+        const formPopup = document.getElementById('form3');
         const inputEmail = document.querySelectorAll('.form-email');
         const inputTel = document.querySelectorAll('.form-phone');
         const inputName = document.querySelectorAll('.form-name');
         const inputMessage = document.querySelector('.mess');
      
+        const loadMessage1 = document.querySelector('#fountainG');
+        loadMessage1.style.display = 'none';
+
         inputEmail.forEach((elem) => elem.addEventListener('input', (event) => {
             event.target.value = event.target.value.replace(/[^a-z\.\-\+\@\_0-9]/gi, '');
             })
@@ -446,21 +453,21 @@ slider();
             event.target.value = event.target.value.replace(/[^а-я ]/gi, '');
         });
 
-        const formQuestion = document.getElementById('form2');
-        const formPopup = document.getElementById('form3');
+
 //div для хранения сообщений для пользователя
         const statusMessage = document.createElement('div');
         statusMessage.style.cssText = 'font-size: 2rem;';
         
 //вешаем на форму обработчик события,срабатывает submit
         form.addEventListener('submit', (event) => {
-            clearInput();
             //отменяем стандартное поведение,чтобы страница не перезагружалась после кнопки submit
             event.preventDefault();
-            
             form.appendChild(statusMessage);
+            loadMessage1.style.display = 'block';
             //когда состояние readyState поменялось с 0 появилось сообщение Загрузка...
-            statusMessage.textContent = loadMessage;
+            //statusMessage.textContent = loadMessage;
+          
+    
             const formData = new FormData(form);
             //Если серверу надо передать в JSON-формате,извлекаем данные из formData,переберем данные с цикле for of
             let body = {};
@@ -475,22 +482,24 @@ slider();
             // });  
             //в postData передаем body, callback-фун-ию(outputData-оповещение пользователя) 
             postData(body, 
-                () => {
+                () => { 
                 statusMessage.textContent = successMessage;
                 }, 
                 (error) => {
                 statusMessage.textContent = errorMessage;
                 console.error(error);
                 }
-            );  
+            );
+            clearInput();
+            loadMessage1.style.display = 'none';
+
         });
 
         formQuestion.addEventListener('submit', (event) => {
-            clearInput();
             event.preventDefault();
             formQuestion.appendChild(statusMessage);
-            statusMessage.textContent = loadMessage;
-
+            loadMessage1.style.display = 'block';
+           
             const formData = new FormData(formQuestion);
             let body = {};
             for(let val of formData.entries()) {
@@ -504,15 +513,17 @@ slider();
                     statusMessage.textContent = errorMessage;
                     console.error(error);
                     }
-                );      
+                );  
+                clearInput();  
+                loadMessage1.style.display = 'none';  
         });
 
         formPopup.addEventListener('submit', (event) => {
-            clearInput();
             event.preventDefault();
             formPopup.appendChild(statusMessage);
-            statusMessage.textContent = loadMessage;
-            statusMessage.style.color = 'white';
+            //statusMessage.textContent = loadMessage;
+            //statusMessage.style.color = 'white';
+            //loadMessage1.style.display = 'block';
 
             const formData = new FormData(formPopup);
             let body = {};
@@ -521,15 +532,18 @@ slider();
                 }
                 postData(body, 
                     () => {
+                        loadMessage1.style.display = 'none';
                     statusMessage.style.color = 'white';
                     statusMessage.textContent = successMessage;
                     }, 
                     (error) => {
+                        loadMessage1.style.display = 'none';
                     statusMessage.style.color = 'white';
                     statusMessage.textContent = errorMessage;
                     console.error(error);
                     }
-                );      
+                );
+                clearInput();    
         }); 
         
         //функция обращения к серверу
@@ -541,8 +555,10 @@ slider();
                     return;
                 }
                 if(request.status === 200) {
+                    loadMessage1.style.display = 'none';
                     outputData();   
                 } else {
+                    loadMessage1.style.display = 'none';
                     errorData(request.status);
                 }
 
