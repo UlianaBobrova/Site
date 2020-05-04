@@ -413,7 +413,6 @@ slider();
             item.value = ''; 
         });
     };
-
    
     //send-ajax-form
     const sendForm = () => {
@@ -422,17 +421,18 @@ slider();
             loadMessage = 'Загрузка...',
             successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
            
-
-        const form = document.getElementById('form1');
-        const formQuestion = document.getElementById('form2');
-        const formPopup = document.getElementById('form3');
+        //const form = document.getElementById('form1');
+        const forms = document.querySelectorAll('form');
         const inputEmail = document.querySelectorAll('.form-email');
         const inputTel = document.querySelectorAll('.form-phone');
         const inputName = document.querySelectorAll('.form-name');
         const inputMessage = document.querySelector('.mess');
      
-        const loadMessage1 = document.querySelector('#fountainG');
-        loadMessage1.style.display = 'none';
+        // const loadMessage1 = document.querySelector('#fountainG');
+        // loadMessage1.style.display = 'none';
+        //создаем элемент для прелоадера
+        // const preload1 = document.createElement('div');
+        // preload1.classList.add('#fountainG_1');
 
         inputEmail.forEach((elem) => elem.addEventListener('input', (event) => {
             event.target.value = event.target.value.replace(/[^a-z\.\-\+\@\_0-9]/gi, '');
@@ -453,22 +453,19 @@ slider();
             event.target.value = event.target.value.replace(/[^а-я ]/gi, '');
         });
 
-
 //div для хранения сообщений для пользователя
         const statusMessage = document.createElement('div');
         statusMessage.style.cssText = 'font-size: 2rem;';
         
 //вешаем на форму обработчик события,срабатывает submit
-        form.addEventListener('submit', (event) => {
+        forms.forEach((elem) => elem.addEventListener('submit', (event) => {
             //отменяем стандартное поведение,чтобы страница не перезагружалась после кнопки submit
             event.preventDefault();
-            form.appendChild(statusMessage);
-            loadMessage1.style.display = 'block';
+            elem.appendChild(statusMessage);
             //когда состояние readyState поменялось с 0 появилось сообщение Загрузка...
-            //statusMessage.textContent = loadMessage;
-          
-    
-            const formData = new FormData(form);
+            statusMessage.textContent = loadMessage;
+           
+            const formData = new FormData(elem);
             //Если серверу надо передать в JSON-формате,извлекаем данные из formData,переберем данные с цикле for of
             let body = {};
             //с помощью метода .entries вытащим значения из formData.Получаем массив
@@ -481,73 +478,34 @@ slider();
             //     body[key] = val;
             // });  
             //в postData передаем body, callback-фун-ию(outputData-оповещение пользователя) 
-            postData(body, 
-                () => { 
-                statusMessage.textContent = successMessage;
-                }, 
-                (error) => {
-                statusMessage.textContent = errorMessage;
-                console.error(error);
-                }
-            );
+            postData(body)
+                    .then(() => {
+                        statusMessage.style.color = 'white';
+                        statusMessage.textContent = successMessage;
+                        setTimeout(() => {statusMessage.textContent = '';}, 5000);})
+                    .catch(error => {
+                        statusMessage.style.color = 'white';
+                        statusMessage.textContent = errorMessage;
+                        console.error(error);}
+                    );
+            //     () => { 
+            //     statusMessage.style.color = 'white';
+            //     statusMessage.textContent = successMessage;
+            //     }, 
+            //     (error) => {
+            //     statusMessage.style.color = 'white';
+            //     statusMessage.textContent = errorMessage;
+            //     console.error(error);
+            //     }
+            // );
             clearInput();
-            loadMessage1.style.display = 'none';
-
-        });
-
-        formQuestion.addEventListener('submit', (event) => {
-            event.preventDefault();
-            formQuestion.appendChild(statusMessage);
-            loadMessage1.style.display = 'block';
-           
-            const formData = new FormData(formQuestion);
-            let body = {};
-            for(let val of formData.entries()) {
-                body[val[0]] = val[1];                   
-                }
-                postData(body, 
-                    () => {
-                    statusMessage.textContent = successMessage;
-                    }, 
-                    (error) => {
-                    statusMessage.textContent = errorMessage;
-                    console.error(error);
-                    }
-                );  
-                clearInput();  
-                loadMessage1.style.display = 'none';  
-        });
-
-        formPopup.addEventListener('submit', (event) => {
-            event.preventDefault();
-            formPopup.appendChild(statusMessage);
-            //statusMessage.textContent = loadMessage;
-            //statusMessage.style.color = 'white';
-            //loadMessage1.style.display = 'block';
-
-            const formData = new FormData(formPopup);
-            let body = {};
-            for(let val of formData.entries()) {
-                body[val[0]] = val[1];                   
-                }
-                postData(body, 
-                    () => {
-                        loadMessage1.style.display = 'none';
-                    statusMessage.style.color = 'white';
-                    statusMessage.textContent = successMessage;
-                    }, 
-                    (error) => {
-                        loadMessage1.style.display = 'none';
-                    statusMessage.style.color = 'white';
-                    statusMessage.textContent = errorMessage;
-                    console.error(error);
-                    }
-                );
-                clearInput();    
-        }); 
+            })
+        );
         
         //функция обращения к серверу
-        const postData = (body, outputData, errorData) => {
+        const postData = (body) => {
+
+            return new Promise((resolve, reject) => {
             const request = new XMLHttpRequest();
             //readeyStateChange отслеживать после XMLHttpRequest,чтобы отслеживать процесс. Это событие возникает,когда меняется состояние readyState
             request.addEventListener('readystatechange', () =>{     
@@ -555,13 +513,12 @@ slider();
                     return;
                 }
                 if(request.status === 200) {
-                    loadMessage1.style.display = 'none';
-                    outputData();   
+                    resolve(request.status);
+                    //outputData();   
                 } else {
-                    loadMessage1.style.display = 'none';
-                    errorData(request.status);
+                    reject(request.status);
+                    //errorData(request.status);
                 }
-
             });
 
             //метод POST для отправки данных на сервер.URL-пишем путь до файла server.php 
@@ -576,8 +533,9 @@ slider();
 
             //вместо formData будем отправлять body в формате JSON
             request.send(JSON.stringify(body));
-        };
+            });
 
+        };
     };
 
     sendForm();
