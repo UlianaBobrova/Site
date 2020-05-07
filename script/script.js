@@ -479,15 +479,21 @@ slider();
             // });  
             //в postData передаем body, callback-фун-ию(outputData-оповещение пользователя) 
             postData(body)
-                    .then(() => {
+            
+                    .then((response) => {
+                        if(response.status !== 200) {
+                            throw new Error('Status network not 200');
+                        }
                         statusMessage.style.color = 'white';
                         statusMessage.textContent = successMessage;
-                        setTimeout(() => {statusMessage.textContent = '';}, 5000);})
-                    .catch(error => {
+                        setTimeout(() => {statusMessage.textContent = ''}, 5000);
+                        // console.log(response);
+                    })
+                    .catch((error) => {
                         statusMessage.style.color = 'white';
                         statusMessage.textContent = errorMessage;
-                        console.error(error);}
-                    );
+                        console.error(error);
+                    });
             //     () => { 
             //     statusMessage.style.color = 'white';
             //     statusMessage.textContent = successMessage;
@@ -504,38 +510,45 @@ slider();
         
         //функция обращения к серверу
         const postData = (body) => {
-
-            return new Promise((resolve, reject) => {
-            const request = new XMLHttpRequest();
-            //readeyStateChange отслеживать после XMLHttpRequest,чтобы отслеживать процесс. Это событие возникает,когда меняется состояние readyState
-            request.addEventListener('readystatechange', () =>{     
-                if(request.readyState !== 4) {
-                    return;
-                }
-                if(request.status === 200) {
-                    resolve(request.status);
-                    //outputData();   
-                } else {
-                    reject(request.status);
-                    //errorData(request.status);
-                }
-            });
-
-            //метод POST для отправки данных на сервер.URL-пишем путь до файла server.php 
-            request.open('POST', './server.php');
-            //настройка заголовков.Второй параметр-значение,надо указать,что мы данные отправляем с формы
-            // request.setRequestHeader('Content-type', 'multipart/form-data');
-            request.setRequestHeader('Content-type', 'application/json');
-            //перед отправкой, надо данные получить при помощи javaScript.Это удобнее сделать через объект FormData,считывает все данные из формы,input,все,что содержится в форме и имеет формат name
-          
-            //открываем соединение и отправляем данные с помошью метода send
-            // request.send(formData);
-
-            //вместо formData будем отправлять body в формате JSON
-            request.send(JSON.stringify(body));
-            });
-
+            return fetch('./server.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });   
         };
+    //         return new Promise((resolve, reject) => {
+    //         const request = new XMLHttpRequest();
+    //         //readeyStateChange отслеживать после XMLHttpRequest,чтобы отслеживать процесс. Это событие возникает,когда меняется состояние readyState
+    //         request.addEventListener('readystatechange', () =>{     
+    //             if(request.readyState !== 4) {
+    //                 return;
+    //             }
+    //             if(request.status === 200) {
+    //                 resolve(request.status);
+    //                 //outputData();   
+    //             } else {
+    //                 reject(request.statusText);
+    //                 //errorData(request.status);
+    //             }
+    //         });
+
+    //         //метод POST для отправки данных на сервер.URL-пишем путь до файла server.php 
+    //         request.open('POST', './server.php');
+    //         //настройка заголовков.Второй параметр-значение,надо указать,что мы данные отправляем с формы
+    //         // request.setRequestHeader('Content-type', 'multipart/form-data');
+    //         request.setRequestHeader('Content-type', 'application/json');
+    //         //перед отправкой, надо данные получить при помощи javaScript.Это удобнее сделать через объект FormData,считывает все данные из формы,input,все,что содержится в форме и имеет формат name
+          
+    //         //открываем соединение и отправляем данные с помошью метода send
+    //         // request.send(formData);
+
+    //         //вместо formData будем отправлять body в формате JSON
+    //         request.send(JSON.stringify(body));
+    //         });
+
+    //     };
     };
 
     sendForm();
