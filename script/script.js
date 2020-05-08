@@ -456,15 +456,32 @@ slider();
 //div для хранения сообщений для пользователя
         const statusMessage = document.createElement('div');
         statusMessage.style.cssText = 'font-size: 2rem;';
+
+        const preloadTotal = document.createElement('div');
+        preloadTotal.id = 'fountainG';
+        const preload1 = document.createElement('div');
+        preload1.id = 'fountainG_1';
+        preload1.classList.add('fountainG');
+        preloadTotal.appendChild(preload1);
+        const preload2 = document.createElement('div');
+        preload2.id = 'fountainG_2';
+        preload2.classList.add('fountainG');    
+        preloadTotal.appendChild(preload2);
+        const preload3 = document.createElement('div');
+        preload3.id = 'fountainG_3';
+        preload3.classList.add('fountainG');
+        preloadTotal.appendChild(preload3);
         
 //вешаем на форму обработчик события,срабатывает submit
         forms.forEach((elem) => elem.addEventListener('submit', (event) => {
             //отменяем стандартное поведение,чтобы страница не перезагружалась после кнопки submit
             event.preventDefault();
             elem.appendChild(statusMessage);
+            elem.appendChild(preloadTotal);
             //когда состояние readyState поменялось с 0 появилось сообщение Загрузка...
-            statusMessage.textContent = loadMessage;
-           
+            //statusMessage.textContent = loadMessage;
+            preloadTotal.style.display = 'block';
+
             const formData = new FormData(elem);
             //Если серверу надо передать в JSON-формате,извлекаем данные из formData,переберем данные с цикле for of
             let body = {};
@@ -485,12 +502,13 @@ slider();
                             throw new Error('Status network not 200');
                         }
                         statusMessage.style.color = 'white';
+                        preloadTotal.style.display = 'none';
                         statusMessage.textContent = successMessage;
                         setTimeout(() => {statusMessage.textContent = ''}, 5000);
-                        // console.log(response);
                     })
                     .catch((error) => {
                         statusMessage.style.color = 'white';
+                        preloadTotal.style.display = 'none';
                         statusMessage.textContent = errorMessage;
                         console.error(error);
                     });
