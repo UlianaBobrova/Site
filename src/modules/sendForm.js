@@ -70,6 +70,7 @@ const sendForm = () => {
                 elem.appendChild(preloadTotal);
                 //когда состояние readyState поменялось с 0 появилось сообщение Загрузка...
                 //statusMessage.textContent = loadMessage;
+                
                 preloadTotal.style.display = 'block';
     
                 const formData = new FormData(elem);
@@ -100,6 +101,7 @@ const sendForm = () => {
                             statusMessage.style.color = 'white';
                             preloadTotal.style.display = 'none';
                             statusMessage.textContent = errorMessage;
+                            setTimeout(() => {statusMessage.textContent = ''}, 1000);
                             console.error(error);
                         });
                 //     () => { 
