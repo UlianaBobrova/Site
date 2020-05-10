@@ -48,6 +48,7 @@ const togglePopUp = () => {
 //Нажатие на кнопки
     popupBtn.forEach((elem) => 
         elem.addEventListener('click', popupOpacity));
+
 };
 
 

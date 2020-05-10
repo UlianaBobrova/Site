@@ -101,7 +101,7 @@ const sendForm = () => {
                             statusMessage.style.color = 'white';
                             preloadTotal.style.display = 'none';
                             statusMessage.textContent = errorMessage;
-                            setTimeout(() => {statusMessage.textContent = ''}, 1000);
+                            setTimeout(() => {statusMessage.textContent = ''}, 2000);
                             console.error(error);
                         });
                 //     () => { 
