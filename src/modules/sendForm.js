@@ -40,7 +40,7 @@ const sendForm = () => {
             );
     
             inputMessage.addEventListener('input', (event) => {
-                event.target.value = event.target.value.replace(/[^а-я ]/gi, '');
+                event.target.value = event.target.value.replace(/[^а-я \.\,\:\?\-\+\@\_0-9]/gi, '');
             });
     
     //div для хранения сообщений для пользователя
